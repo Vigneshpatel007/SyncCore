@@ -1,0 +1,39 @@
+# Run everything with:  docker compose up --build
+# Website: http://localhost   |   Swagger: http://localhost:8080/swagger-ui.html
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: synccore
+    volumes:
+      - mysql_data:/var/lib/mysql      # data survives container restarts
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build: ./backend
+    depends_on:
+      mysql:
+        condition: service_healthy     # wait until MySQL is really ready
+    environment:
+      DB_HOST: mysql
+      DB_NAME: synccore
+      DB_USER: root
+      DB_PASSWORD: root
+      JWT_SECRET: change-this-to-a-long-random-string-of-32-plus-characters
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  mysql_data:
