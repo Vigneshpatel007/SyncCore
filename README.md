@@ -79,8 +79,7 @@ cd backend && mvn test       # JUnit 5 + Mockito unit tests for the order/stock 
 ```
 
 ## 5. Deploying
-- **Backend** (Render / Railway): deploy the `backend` folder using its Dockerfile. Set env variables
-  `DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD, JWT_SECRET` (use a managed MySQL).
+- **Backend** (Render / Railway): deploy with the backend Dockerfile (set Railway Root Directory to `/backend` when deploying from a monorepo). Attach a managed MySQL service. This app reads Railway standard variables `MYSQLHOST`, `MYSQLPORT`, `MYSQLDATABASE`, `MYSQLUSER`, and `MYSQLPASSWORD` automatically; alternatively set `DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD`. Set `JWT_SECRET` to a long random value.
 - **Frontend** (Netlify / Vercel): build command `npm run build`, publish folder `dist`, and set
   `VITE_API_URL=https://<your-backend-url>/api`. Add that site's address to `allowedOrigins`
   in `SecurityConfig.java`.
